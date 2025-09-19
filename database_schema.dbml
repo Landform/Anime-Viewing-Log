@@ -1,0 +1,28 @@
+Table users {
+  id int [pk, increment]
+  username varchar [unique, not null]
+  email varchar [unique, not null]
+  password_hash varchar [not null]
+  is_staff boolean [default: false]
+  date_joined timestamp [not null]
+}
+
+Table anime {
+  id int [pk, increment]
+  title varchar [not null]
+  synopsis text
+  cover_image_url varchar
+  total_episodes int
+  status varchar
+}
+
+Table user_anime_list {
+  id int [pk, increment]
+  user_id int [not null]
+  anime_id int [not null]
+  tracking_status varchar [not null]
+  episodes_watched int [not null]
+}
+
+Ref: users.id < user_anime_list.user_id
+Ref: anime.id < user_anime_list.anime_id
