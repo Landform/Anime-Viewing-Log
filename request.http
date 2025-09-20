@@ -1,0 +1,78 @@
+### Register a new user
+POST http://127.0.0.1:8000/api/auth/register/
+Content-Type: application/json
+
+{
+    "username": "testuser",
+    "email": "test@example.com",
+    "password": "some-strong-password-123"
+}
+
+###
+# Note: The ### is a separator for requests in this file.
+
+### Log in with the new user
+POST http://127.0.0.1:8000/api/auth/login/
+Content-Type: application/json
+
+{
+    "username": "testuser",
+    "password": "some-strong-password-123"
+}
+
+###
+
+### Log out the user
+# We will need to manually add the session cookie here later to test this.
+POST http://127.0.0.1:8000/api/auth/logout/
+
+###
+# NOTE: You must be logged in to run the following requests.
+# First, run the LOGIN request from above to get a session cookie.
+# The REST Client extension will automatically save and send this cookie.
+
+### 4. Search for an anime
+GET http://127.0.0.1:8000/api/anime/?search=titan
+
+###
+
+### 5. Get the (empty) user list
+GET http://127.0.0.1:8000/api/user-list/
+
+###
+
+### 6. Add an anime to the user's list
+# We'll add "Attack on Titan", which should have an ID of 2 if you added it second.
+# Check your admin panel to be sure.
+POST http://127.0.0.1:8000/api/user-list/
+Content-Type: application/json
+X-CSRFToken: bSeIqRfeBDTyXjUspZ8Oc8ZTDq8aICJX
+
+{
+    "anime_id": 2,
+    "tracking_status": "Plan to Watch"
+}
+
+###
+
+### 7. Get the user list again to see the new item
+GET http://127.0.0.1:8000/api/user-list/
+
+###
+
+### 8. Update the status of the anime on the list
+# The ID here is the ID of the *user_anime_list* entry (which will be 1).
+PUT http://127.0.0.1:8000/api/user-list/1/
+Content-Type: application/json
+X-CSRFToken: bSeIqRfeBDTyXjUspZ8Oc8ZTDq8aICJX
+
+{
+    "anime_id": 2,
+    "episodes_watched": 5,
+    "tracking_status": "Watching"
+}
+
+###
+
+### 9. Get the user list one last time to see the update
+GET http://127.0.0.1:8000/api/user-list/
