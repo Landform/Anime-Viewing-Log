@@ -10,5 +10,8 @@
   "devDependencies": {
     "@playwright/test": "^1.55.0",
     "@types/node": "^24.5.2"
+  },
+  "dependencies": {
+    "axois": "^0.0.1-security"
   }
 }
