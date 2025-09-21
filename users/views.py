@@ -3,6 +3,7 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import UserSerializer, ProfileSerializer
+from django.http import JsonResponse
 
 class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -55,3 +56,16 @@ class ProfileView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class HealthCheckView(APIView):
+    """
+    A simple view to check the health of the application.
+    It does not require authentication.
+    """
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = []
+
+    def get(self, request):
+        # You could add more complex checks here, like checking the database connection.
+        # For now, just returning a success response is enough.
+        return JsonResponse({"status": "ok"})
