@@ -1,47 +1,54 @@
-// src/main.tsx (Corrected and Verified)
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import axios from 'axios';
 
-// Import the main layout component
+// --- Global Axios Configuration ---
+axios.defaults.withCredentials = true;
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.xsrfCookieName = "csrftoken";
+
+// --- Context Providers ---
+import { AuthProvider } from './context/AuthContext.tsx';
+
+// --- Component Imports ---
 import App from './App.tsx';
-
-// Import the page components with the correct paths
 import LoginPage from './pages/LoginPage.tsx';
-import DashboardPage from './pages/DashboardPage.tsx'; // Corrected path
+import RegistrationPage from './pages/RegistrationPage.tsx';
+import DashboardPage from './pages/DashboardPage.tsx';
+import SearchPage from './pages/SearchPage.tsx';
+import AnimeDetailPage from './pages/AnimeDetailPage.tsx';
+import ViewingHistoryPage from './pages/ViewingHistoryPage.tsx';
+import UserProfilePage from './pages/UserProfilePage.tsx';
+import ExplorePage from './pages/ExplorePage.tsx'; // Import the new page
 
-// Import the global stylesheet
+// --- Stylesheet Import ---
 import './styles.css';
 
-// This is where we define all the routes for our application
+// --- Router Definition ---
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />, // The App component provides the layout (Topbar, etc.)
+    element: <App />,
     children: [
-      // This is the default page that will render at the '/' path
-      {
-        index: true,
-        element: <LoginPage />,
-      },
-      // This is the explicit login page route
-      {
-        path: 'login',
-        element: <LoginPage />,
-      },
-      // This is the dashboard route for authenticated users
-      {
-        path: 'dashboard',
-        element: <DashboardPage />,
-      },
+      { index: true, element: <LoginPage /> },
+      { path: 'login', element: <LoginPage /> },
+      { path: 'register', element: <RegistrationPage /> },
+      { path: 'dashboard', element: <DashboardPage /> },
+      { path: 'search', element: <SearchPage /> },
+      { path: 'anime/:id', element: <AnimeDetailPage /> },
+      { path: 'history', element: <ViewingHistoryPage /> },
+      { path: 'profile', element: <UserProfilePage /> },
+      { path: 'explore', element: <ExplorePage /> }, // Add the new route
     ],
   },
 ]);
 
-// This tells React to render our router into the HTML
+// --- Application Rendering ---
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>,
 );

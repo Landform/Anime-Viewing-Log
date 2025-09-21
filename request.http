@@ -76,3 +76,5 @@ X-CSRFToken: bSeIqRfeBDTyXjUspZ8Oc8ZTDq8aICJX
 
 ### 9. Get the user list one last time to see the update
 GET http://127.0.0.1:8000/api/user-list/
+
+GET http://127.0.0.1:8000/api/anime/2/

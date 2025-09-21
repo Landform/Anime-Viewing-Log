@@ -3,8 +3,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.tsx';
 import axios from 'axios'; // Reverted
 
-const LoginPage = () => {
+const RegistrationPage = () => {
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -12,9 +13,10 @@ const LoginPage = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const response = await axios.post('/api/auth/login/', { // Reverted
-        username: username,
-        password: password,
+      const response = await axios.post('/api/auth/register/', { // Reverted
+        username,
+        email,
+        password,
       });
 
       if (response.data && response.data.user) {
@@ -22,16 +24,15 @@ const LoginPage = () => {
         navigate('/dashboard');
       }
     } catch (error) {
-      console.error('Login failed:', error);
-      alert('Login failed. Please check your credentials.');
+      console.error('Registration failed:', error);
+      alert('Registration failed. Please try again.');
     }
   };
 
-  // ... JSX is the same
   return (
     <div className="page-container">
       <div className="login-card">
-        <h2>Enter Your Login Details</h2>
+        <h2>Create Your Account</h2>
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="input-group">
             <input
@@ -40,6 +41,17 @@ const LoginPage = () => {
               placeholder="Enter your username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-group">
+            <input
+              type="email"
+              id="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
           <div className="input-group">
@@ -49,13 +61,14 @@ const LoginPage = () => {
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
           <button type="submit" className="login-button">
-            Login
+            Register
           </button>
           <p className="bottom-link">
-            Don't have an account? <Link to="/register">Register</Link>
+            Already have an account? <Link to="/login">Log In</Link>
           </p>
         </form>
       </div>
@@ -63,4 +76,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegistrationPage;

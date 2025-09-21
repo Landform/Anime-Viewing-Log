@@ -32,7 +32,9 @@ body {
   z-index: 100;
 }
 
-.topbar-logo {
+.topbar-logo a {
+  text-decoration: none;
+  color: #212529;
   font-size: 24px;
   font-weight: 700;
 }
@@ -62,6 +64,20 @@ body {
   padding: 12px 24px;
   font-size: 16px;
   cursor: pointer;
+}
+
+.topbar-logout-btn {
+  background: none;
+  border: 1px solid #CED4DA;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.welcome-message {
+  font-size: 14px;
+  color: #6C757D;
 }
 
 /* --- Login Page Styles --- */
@@ -159,13 +175,23 @@ body {
   margin-bottom: 24px;
 }
 
+/* --- THIS IS THE UPDATED SECTION --- */
 .list-navigation {
   display: flex;
   gap: 32px;
   margin-bottom: 32px;
 }
 
-.list-navigation a {
+.list-navigation button {
+  /* Reset default button styles to make it look like a link */
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-family: 'Inter', sans-serif; /* Inherit the font */
+  cursor: pointer;
+  
+  /* Apply the original link styles */
   text-decoration: none;
   color: #6C757D;
   font-size: 16px;
@@ -174,11 +200,12 @@ body {
   transition: all 0.2s;
 }
 
-.list-navigation a.active, .list-navigation a:hover {
+.list-navigation button.active, .list-navigation button:hover {
   color: #007BFF;
   font-weight: 600;
   border-bottom-color: #007BFF;
 }
+/* --- END UPDATED SECTION --- */
 
 .anime-grid {
   display: grid;
@@ -186,7 +213,7 @@ body {
   gap: 32px;
 }
 
-/* --- Anime Card Component Styles (Verified) --- */
+/* --- Anime Card Component Styles --- */
 .anime-card {
   text-align: left;
 }
@@ -211,4 +238,224 @@ body {
   font-size: 14px;
   color: #6C757D;
   margin: 0;
+}
+
+/* --- Search Page Styles --- */
+.search-form {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.search-input {
+  flex-grow: 1;
+  padding: 16px;
+  border: 1px solid #CED4DA;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.search-button {
+  padding: 16px 24px;
+  background-color: #007BFF;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.search-result-item {
+  display: flex;
+  gap: 24px;
+  background-color: #FFFFFF;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-decoration: none; /* Remove underline from links */
+  color: inherit; /* Inherit text color */
+}
+
+.search-result-image {
+  width: 150px;
+  height: 210px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.search-result-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-result-title {
+  margin-top: 0;
+  font-size: 24px;
+  color: #212529;
+}
+
+.search-result-synopsis {
+  font-size: 16px;
+  color: #6C757D;
+  line-height: 1.6;
+}
+
+.error-message {
+  color: #DC3545; /* Danger color */
+}
+
+/* Append this to src/styles.css */
+
+.progress-widget {
+  background-color: #FFFFFF;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.progress-widget h4 {
+  margin-top: 0;
+  font-size: 18px;
+  color: #212529;
+}
+
+.progress-widget p {
+  font-size: 16px;
+  color: #6C757D;
+}
+
+.episode-tracker {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 16px;
+}
+
+.episode-tracker button {
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 50%; /* Makes the button a circle */
+  width: 40px;
+  height: 40px;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.episode-tracker button:disabled {
+  background-color: #6C757D; /* Gray */
+  cursor: not-allowed;
+}
+
+/* Append this to src/styles.css */
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.history-item {
+  background-color: #FFFFFF;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history-item p {
+  margin: 0;
+  font-size: 16px;
+}
+
+.history-item strong {
+  color: #007BFF; /* Primary color */
+}
+
+.history-date {
+  font-size: 14px;
+  color: #6C757D; /* Secondary color */
+  flex-shrink: 0;
+  margin-left: 24px;
+}
+.profile-card {
+  background-color: #FFFFFF;
+  padding: 48px;
+  border-radius: 8px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.profile-form .input-group {
+  margin-bottom: 24px;
+}
+
+.profile-form label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.profile-form input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #CED4DA;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.profile-save-button {
+  /* Use your primary button styles */
+  padding: 16px 24px;
+  background-color: #007BFF;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.message {
+  margin-top: 16px;
+  color: #28A745; /* Success color */
+}
+
+.welcome-message-link {
+  text-decoration: none; /* Removes the underline */
+}
+
+.profile-card {
+  margin-bottom: 32px; /* Add space between the two cards */
+}
+
+.profile-card h3 {
+  margin-top: 0;
+  border-bottom: 1px solid #DEE2E6;
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+}
+
+.message.success {
+  color: #28A745; /* Green */
+}
+
+.message.error {
+  color: #DC3545; /* Red */
 }
