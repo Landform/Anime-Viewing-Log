@@ -1,4 +1,3 @@
-# .github/workflows/ci.yml
 name: Continuous Integration
 
 on:
@@ -8,52 +7,67 @@ on:
     branches: [ "main" ]
 
 jobs:
-  test-backend:
+  # --- Job 1: Backend Checks ---
+  lint-and-test-backend:
     runs-on: ubuntu-latest
+    name: Lint & Test Backend
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip' # Enable caching for pip
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+    - name: Install dependencies
+      run: pip install -r requirements.txt
 
-      # Placeholder for future backend tests like linting or unit tests
-      - name: Run linter (e.g., flake8)
-        run: echo "Backend linting checks would run here."
+    - name: Run linter (flake8)
+      # This checks for Python style guide violations (PEP8)
+      run: |
+        pip install flake8
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # Exit-zero treats all errors as warnings. To fail the build, remove --exit-zero
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-  test-frontend:
+  # --- Job 2: Frontend Checks ---
+  build-and-test-frontend:
     runs-on: ubuntu-latest
+    name: Build & Test Frontend
+    # This job will run in parallel with the backend job
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm' # Enable caching for npm
+        cache-dependency-path: frontend/vite-project/package-lock.json
 
-      - name: Install frontend dependencies
-        working-directory: ./frontend/vite-project # Specify working directory
-        run: npm install
+    - name: Install frontend dependencies
+      working-directory: ./frontend/vite-project
+      run: npm ci # 'ci' is faster and more reliable for CI environments than 'install'
 
-      - name: Install Playwright Browsers
-        working-directory: ./frontend # Playwright is in this directory
-        run: npx playwright install --with-deps
+    - name: Run linter and type-checker (ESLint & TSC)
+      # This checks for TypeScript errors and style guide violations
+      working-directory: ./frontend/vite-project
+      run: npm run lint
 
-      - name: Run Playwright tests
-        run: |
-          # We start a dummy backend for the tests to run against
-          echo "DJANGO_SECRET_KEY=dummy-secret-for-ci" > .env
-          echo "DATABASE_URL=sqlite:///db.sqlite3" >> .env
-          pip install -r requirements.txt
-          python manage.py migrate
-          python manage.py runserver & # Run server in the background
-          
-          # Now run the tests
-          cd frontend
-          npx playwright test
+    - name: Build the frontend
+      # This ensures the project can be built for production without errors
+      working-directory: ./frontend/vite-project
+      run: npm run build
+
+    - name: Install Playwright Browsers
+      working-directory: ./frontend
+      run: npx playwright install --with-deps
+
+    - name: Run Playwright E2E tests
+      working-directory: ./frontend
+      run: npx playwright test

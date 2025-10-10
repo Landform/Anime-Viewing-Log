@@ -4,7 +4,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-your-secret-key-here'
 DEBUG = True
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.214', 'backend',]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -81,7 +81,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-CORS_ALLOWED_ORIGINS = [ 'http://localhost:5173', 'http://127.0.0.1:5173', ]
+CORS_ALLOWED_ORIGINS = [ 'http://localhost:5173', 'http://127.0.0.1:5173','http://192.168.1.214',]
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = [ 'http://localhost:5173', 'http://127.0.0.1:5173', ]
+CSRF_TRUSTED_ORIGINS = [ 'http://localhost:5173', 'http://127.0.0.1:5173','http://192.168.1.214',]
 SESSION_COOKIE_SAMESITE = 'Lax'
