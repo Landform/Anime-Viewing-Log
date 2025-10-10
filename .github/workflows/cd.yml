@@ -1,0 +1,48 @@
+# .github/workflows/cd.yml
+name: Continuous Deployment
+
+on:
+  # This makes the action manually triggerable from the GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Deploy to Server via SSH
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          # This block of commands is executed on your Linux server
+          
+          # Navigate to the project directory
+          cd ~/Anime-Viewing-Log
+          
+          # Pull the latest code from your GitHub repository
+          echo ">>> Pulling latest code..."
+          git pull origin main
+          
+          # Install/update frontend dependencies
+          echo ">>> Installing frontend dependencies..."
+          cd frontend/vite-project
+          npm install
+          
+          # Build the frontend for production
+          echo ">>> Building frontend..."
+          npm run build
+          
+          # Go back to the root and restart the docker containers
+          echo ">>> Restarting Docker services..."
+          cd ~/Anime-Viewing-Log
+          sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml down
+          sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+          
+          # Prune old docker images to save space on the server
+          echo ">>> Pruning old Docker images..."
+          sudo docker image prune -f
+          
+          echo ">>> Deployment complete!"

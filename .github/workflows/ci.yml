@@ -1,0 +1,59 @@
+# .github/workflows/ci.yml
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Placeholder for future backend tests like linting or unit tests
+      - name: Run linter (e.g., flake8)
+        run: echo "Backend linting checks would run here."
+
+  test-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend/vite-project # Specify working directory
+        run: npm install
+
+      - name: Install Playwright Browsers
+        working-directory: ./frontend # Playwright is in this directory
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: |
+          # We start a dummy backend for the tests to run against
+          echo "DJANGO_SECRET_KEY=dummy-secret-for-ci" > .env
+          echo "DATABASE_URL=sqlite:///db.sqlite3" >> .env
+          pip install -r requirements.txt
+          python manage.py migrate
+          python manage.py runserver & # Run server in the background
+          
+          # Now run the tests
+          cd frontend
+          npx playwright test
