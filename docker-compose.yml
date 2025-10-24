@@ -1,21 +1,30 @@
+# docker-compose.yml
+
 services:
   backend:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
+    # ADDED: This makes all variables from your .env file available to Django
+    env_file:
+      - ./.env
+    # ADDED: This ensures the database container starts BEFORE the backend container
+    depends_on:
+      - db
 
-  # We can keep the database definition here if you want to run it during development,
-  # but the backend in this configuration is not connected to it.
-  # For simplicity, we can comment it out or remove it. Let's keep it for now.
   db:
     image: postgres:15
+    # This 'volumes' block is CORRECT. It's indented under 'db' and uses the mount syntax.
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql/data
+    # This environment block is also correct.
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
+# This is the SINGLE, CORRECT top-level 'volumes:' block.
+# It has NO indentation and simply declares the volume's name.
 volumes:
   postgres_data:
