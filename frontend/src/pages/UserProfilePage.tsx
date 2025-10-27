@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios'; // Reverted
-import { useAuth } from '../context/AuthContext.tsx';
+import { useAuth } from '../context/AuthProvider.tsx';
 
 const UserProfilePage = () => {
   const { user } = useAuth();
