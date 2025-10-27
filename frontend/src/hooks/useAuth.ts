@@ -2,7 +2,7 @@
 
 import { useContext } from 'react';
 // We import the context itself from its original location.
-import { AuthContext } from '../context/AuthProvider.tsx';
+import { AuthContext } from '../context/AuthContext.tsx';
 
 /**
  * This is a custom hook that simplifies accessing the AuthContext.
