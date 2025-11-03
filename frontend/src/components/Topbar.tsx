@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext.tsx';
+import { useAuth } from '../hooks/useAuth.ts';
 import axios from 'axios';
 
 const Topbar = () => {
