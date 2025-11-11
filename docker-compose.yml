@@ -9,5 +9,9 @@ services:
       - DEBUG=False
       - DATABASE_URL=${DATABASE_URL}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
-      - PORT=${PORT}
-    # Do NOT map ports; Render assigns $PORT automatically
+    # Note: No "ports:" mapping here! Render injects $PORT automatically.
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"  # Frontend runs on standard HTTP port
