@@ -6,7 +6,7 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --- Secret Key & Debug ---
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'default-local-secret-key')
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'unsafe-default-for-local')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # --- Allowed Hosts ---
