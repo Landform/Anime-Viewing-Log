@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   db:
     image: postgres:15-alpine
@@ -29,7 +31,7 @@ services:
   nginx:
     build: ./nginx
     volumes:
-      - ./frontend/vite-project/dist:/usr/share/nginx/html:ro
+      - ./frontend/dist:/usr/share/nginx/html:ro
       - static_volume:/home/app/staticfiles:ro
     ports:
       - "80:80"
@@ -45,8 +47,6 @@ services:
       - "3001:3001"
     restart: unless-stopped
 
-# --- THIS IS THE CORRECTED SECTION ---
-# All named volumes are defined here in a single list.
 volumes:
   postgres_data:
   static_volume:

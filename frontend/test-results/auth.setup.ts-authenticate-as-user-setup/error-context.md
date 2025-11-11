@@ -21,19 +21,14 @@
         - /url: /register
         - button "Sign up" [ref=e15]
   - main [ref=e16]:
-    - generic [ref=e17]:
-      - generic [ref=e18]:
-        - img "One Piece" [ref=e19]
-        - generic [ref=e20]:
-          - heading "My Progress" [level=4] [ref=e21]
-          - paragraph [ref=e22]: "Status: Watching"
-          - generic [ref=e23]:
-            - button "-" [disabled] [ref=e24]
-            - generic [ref=e25]: 0 / 1000
-            - button "+" [ref=e26] [cursor=pointer]
-      - generic [ref=e27]:
-        - heading "One Piece" [level=1] [ref=e28]
-        - paragraph [ref=e29]: "Status: Airing | Episodes: 1000"
-        - heading "Synopsis" [level=2] [ref=e30]
-        - paragraph [ref=e31]: No synopsis available.
+    - generic [ref=e18]:
+      - heading "Enter Your Login Details" [level=2] [ref=e19]
+      - generic [ref=e20]:
+        - textbox "Enter your username" [ref=e22]: karanesh12345
+        - textbox "Enter your password" [ref=e24]: karaneshkarruna
+        - button "Login" [active] [ref=e25] [cursor=pointer]
+        - paragraph [ref=e26]:
+          - text: Don't have an account?
+          - link "Register" [ref=e27] [cursor=pointer]:
+            - /url: /register
 ```

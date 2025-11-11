@@ -9,6 +9,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 // ---------------------------------------------------
 
+// --- START DEBUGGING BLOCK ---
+const envPath = path.resolve(__dirname, '../../.env');
+console.log('>>> [DEBUG] CWD:', process.cwd());
+console.log('>>> [DEBUG] __dirname:', __dirname);
+console.log('>>> [DEBUG] Attempting to load .env from:', envPath);
+// --- END DEBUGGING BLOCK ---
+
 // Now this line will work correctly because we have defined __dirname ourselves.
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
