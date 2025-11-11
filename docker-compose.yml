@@ -3,19 +3,17 @@ version: '3.9'
 services:
   backend:
     build: ./backend
-    command: gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT
+    command: gunicorn backend.wsgi:application --bind 0.0.0.0:${PORT}
     environment:
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
       - DEBUG=False
       - DATABASE_URL=${DATABASE_URL}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
       - PORT=${PORT}
-    ports:
-      - "${PORT}:${PORT}"
-    restart: always
+    # Render automatically assigns the port; do NOT map host ports
+    # Remove "ports" to avoid "$PORT is not a valid port number" error
 
   frontend:
     build: ./frontend
     ports:
       - "80:80"
-    restart: always
