@@ -2,19 +2,19 @@ import os
 from pathlib import Path
 import dj_database_url
 
+# --- Paths ---
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Secret key
-SECRET_KEY = os.environ.get('SECRET_KEY', '(-r)y+chb%tykqmd6-4h_bj5342$64(z$bo)=ptjlo*a$@ihq1')
-
-# Debug mode
+# --- Secret Key & Debug ---
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'default-local-secret-key')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# Allowed hosts (splits comma-separated env variable into a list)
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
-ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS]  # Remove accidental spaces
+# --- Allowed Hosts ---
+# Read from environment variable, default to localhost for local dev
+ALLOWED_HOSTS = [host.strip() for host in os.environ.get(
+    'ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')]
 
-# Installed apps
+# --- Installed Apps ---
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     'api',
 ]
 
-# Middleware
+# --- Middleware ---
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -40,53 +40,37 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# --- URLs & WSGI ---
 ROOT_URLCONF = 'backend.urls'
-
-# Templates
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
-
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# Database (can switch to PostgreSQL if DATABASE_URL is set)
+# --- Database ---
 DATABASES = {
     'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
+        default=os.environ.get('DATABASE_URL', f"sqlite:///{BASE_DIR / 'db.sqlite3'}")
     )
 }
 
-# Password validation
+# --- Password Validators ---
 AUTH_PASSWORD_VALIDATORS = [
-    { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
-    { 'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
-    { 'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
-    { 'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Internationalization
+# --- Internationalization ---
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files
-STATIC_URL = 'static/'
+# --- Static Files ---
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Django REST Framework
+# --- REST Framework ---
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
@@ -96,10 +80,9 @@ REST_FRAMEWORK = {
     ],
 }
 
-# CORS
-CORS_ALLOWED_ORIGINS = [ "https://anime-viewing-log.onrender.com" ]
+# --- CORS & CSRF ---
+# Only allow real domains, not localhost
+CORS_ALLOWED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS if host not in ['localhost', '127.0.0.1']]
+CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS if host not in ['localhost', '127.0.0.1']]
 CORS_ALLOW_CREDENTIALS = True
-
-# CSRF
-CSRF_TRUSTED_ORIGINS = ["https://anime-viewing-log.onrender.com"]
 SESSION_COOKIE_SAMESITE = 'Lax'
