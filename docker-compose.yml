@@ -10,10 +10,4 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
       - PORT=${PORT}
-    # Render automatically assigns the port; do NOT map host ports
-    # Remove "ports" to avoid "$PORT is not a valid port number" error
-
-  frontend:
-    build: ./frontend
-    ports:
-      - "80:80"
+    # Do NOT map ports; Render assigns $PORT automatically
