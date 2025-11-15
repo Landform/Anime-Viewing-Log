@@ -10,13 +10,16 @@ services:
     plan: free
     region: oregon
     
-    # --- THIS IS THE CRITICAL FIX ---
-    runtime: docker # Explicitly tell Render to use Docker
-    dockerfilePath: ./Dockerfile # Now this will be correctly recognized
+    # Specify the runtime and the path to the Dockerfile
+    runtime: docker
+    dockerfilePath: ./Dockerfile
     
-    # The health check and start command remain the same
+    # Health check remains
     healthCheckPath: /health/
-    startCommand: "gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT"
+
+    # NO startCommand HERE. Render will use the CMD from your Dockerfile:
+    # CMD ["gunicorn", "backend.wsgi:application", "--bind", "0.0.0.0:8000"]
+    # Render will automatically map its internal $PORT to the exposed 8000 port.
 
     envVars:
       - key: DATABASE_URL
