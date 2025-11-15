@@ -1,43 +1,35 @@
-services:
-  # 1. The PostgreSQL Database
-  # The type is 'private' for internal services like databases.
-  - type: psql
-    name: anime-db
+# The top-level key for managed databases
+databases:
+  - name: anime-db
     plan: free # Use the free database tier
-    psqlVersion: 15 # Match your Docker image version
+    postgresMajorVersion: 15 # Match your Docker image version
     region: oregon # You can choose a different region, e.g., frankfurt
 
-  # 2. The Django Backend Service
+# The top-level key for your web services, workers, etc.
+services:
   - type: web
     name: backend
     plan: free # Use the free web service tier
     region: oregon # Use the same region as your database
     dockerfilePath: ./Dockerfile # Path to your backend Dockerfile
-    healthCheckPath: /health/ # The health check endpoint we added to urls.py
+    healthCheckPath: /health/
     
-    # Define the command to run when the container starts
+    # Render provides a $PORT variable that your app must listen on
     startCommand: "gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT"
 
     envVars:
       - key: DATABASE_URL
-        fromService:
-          type: psql
-          name: anime-db # Tells Render to get the DB URL from the 'anime-db' service
+        fromDatabase:
+          name: anime-db # Correct way to reference the database
           property: connectionString
       - key: DJANGO_SECRET_KEY
-        generateValue: true # Let Render generate a secure secret key for you
+        generateValue: true # Let Render create a secure secret key
       - key: APP_HOSTNAME
         fromService:
           type: web
           name: backend
-          property: host # Automatically get the hostname from the web service
+          property: host # Automatically get the hostname
       - key: DEBUG
         value: 0
-      - key: PYTHONUNBUFFERED # Best practice for Docker logs
+      - key: PYTHONUNBUFFERED
         value: 1
-    
-    autoDeploy: true # Automatically deploy when you push to the 'main' branch
-    
-    # Define a pre-deploy step to run database migrations
-    preDeploy:
-      - command: "python manage.py migrate"
