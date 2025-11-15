@@ -13,7 +13,6 @@ COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-<<<<<<< HEAD
 
 # --- Final Stage ---
 # This stage builds the final, lightweight production image
@@ -50,10 +49,3 @@ EXPOSE 8000
 
 # Run the application with Gunicorn
 CMD ["gunicorn", "backend.wsgi:application", "--bind", "0.0.0.0:8000"]
-=======
-# Copy project
-COPY . .
-
-# Run Gunicorn using the port Render provides
-CMD ["gunicorn", "backend.wsgi:application", "--bind", "0.0.0.0:$PORT", "--workers", "3"]
->>>>>>> 01b354261828ff1c21e9229d6f7edeb07738b60a
