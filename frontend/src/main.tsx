@@ -4,9 +4,20 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import axios from 'axios';
 
 // --- Global Axios Configuration ---
+
+// Get the base URL from Vite's environment variables.
+// In development, this will be '/api' (for the proxy).
+// In production, this will be 'https://backend-smdp.onrender.com'.
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+// Set the base URL for all Axios requests
+axios.defaults.baseURL = API_BASE_URL;
+
+// Keep your existing defaults for CSRF and session handling
 axios.defaults.withCredentials = true;
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
+
 
 // --- Context Providers ---
 import { AuthProvider } from './context/AuthProvider.tsx';
