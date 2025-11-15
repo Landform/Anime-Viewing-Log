@@ -9,7 +9,7 @@ axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
 // --- Context Providers ---
-import { AuthProvider } from './context/AuthContext.tsx';
+import { AuthProvider } from './context/AuthProvider.tsx';
 
 // --- Component Imports ---
 import App from './App.tsx';

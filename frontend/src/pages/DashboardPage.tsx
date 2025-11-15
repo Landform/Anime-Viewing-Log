@@ -43,7 +43,7 @@ const DashboardPage = () => {
 
   return (
     <div className="page-content">
-      <h1 className="page-title">My Anime Lists</h1>
+      <h1 className="page-title">My Anime Lists 1234</h1>
       <nav className="list-navigation">
         {(["Watching", "Plan to Watch", "Completed", "On-Hold", "Dropped"] as TrackingStatus[]).map(status => (
           <button

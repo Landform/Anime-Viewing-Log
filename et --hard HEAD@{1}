@@ -1,0 +1,22 @@
+[33me1f1fdb[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfinal-solution-branch[m[33m)[m HEAD@{0}: commit: made it work again
+[33m0f0dad5[m HEAD@{1}: reset: moving to 0f0dad5
+[33m01b3542[m[33m ([m[1;31morigin/final-solution-branch[m[33m)[m HEAD@{2}: commit: Configure ALLOWED_HOSTS, CORS, CSRF for Render deployment3
+[33me74ce7f[m HEAD@{3}: commit: Configure ALLOWED_HOSTS, CORS, CSRF for Render deployment2
+[33m39c493f[m HEAD@{4}: commit: Configure ALLOWED_HOSTS, CORS, CSRF for Render deployment1
+[33mb5e573b[m HEAD@{5}: commit: Configure ALLOWED_HOSTS, CORS, CSRF for Render deployment
+[33m1f4ad58[m HEAD@{6}: commit: Configure ALLOWED_HOSTS, CORS, CSRF for Render deployment
+[33m39db0a1[m HEAD@{7}: commit: Configure ALLOWED_HOSTS, CORS, CSRF for Render deployment
+[33m99fbbd7[m HEAD@{8}: commit: Configure ALLOWED_HOSTS, CORS, CSRF for Render deployment
+[33m87b8038[m HEAD@{9}: commit: Configure ALLOWED_HOSTS, CORS, CSRF for Render deployment
+[33m2a3d56c[m HEAD@{10}: commit: Configure ALLOWED_HOSTS, CORS, CSRF for Render deployment
+[33m63969a5[m HEAD@{11}: commit: Add Render domain to ALLOWED_HOSTS
+[33m4b38b46[m HEAD@{12}: commit: Ready for deployment
+[33m0f0dad5[m HEAD@{13}: commit: Fixing ci 3
+[33m5a8077a[m HEAD@{14}: commit: Fixing ci 2
+[33md1dae28[m HEAD@{15}: commit: Made changed to CI.yml file
+[33m9a30482[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{16}: checkout: moving from main to final-solution-branch
+[33m9a30482[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{17}: reset: moving to origin/main
+[33m9a30482[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{18}: checkout: moving from main to main
+[33m9a30482[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{19}: commit: Made changed to CI.yml file
+[33m8ce09d3[m HEAD@{20}: commit: feat: Restore and commit local configuration changes
+[33m378d061[m HEAD@{21}: clone: from github.com:Landform/Anime-Viewing-Log.git
