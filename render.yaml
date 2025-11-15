@@ -1,0 +1,39 @@
+services:
+  # 1. The PostgreSQL Database
+  - name: anime-db
+    type: psql
+    plan: free # Use the free database tier
+    psqlVersion: 15 # Match your Docker image version
+    region: oregon # You can choose a different region, e.g., frankfurt
+
+  # 2. The Django Backend Service
+  - name: backend
+    type: web
+    plan: free # Use the free web service tier
+    region: oregon # Use the same region as your database
+    dockerfilePath: ./Dockerfile # Path to your backend Dockerfile
+    healthCheckPath: /health/ # The health check endpoint we added to urls.py
+    envVars:
+      - key: DATABASE_URL
+        fromService:
+          type: psql
+          name: anime-db # Tells Render to get the DB URL from the 'anime-db' service
+          property: connectionString
+      - key: DJANGO_SECRET_KEY
+        sync: false # We will set this manually in the dashboard for security
+      - key: APP_HOSTNAME
+        sync: false # We will set this manually in the dashboard
+      - key: DEBUG
+        value: 0
+    autoDeploy: true # Automatically deploy when you push to the 'main' branch
+    buildFilter:
+      paths:
+        - "backend/**" # Only rebuild if backend code changes
+        - "Dockerfile"
+        - "render.yaml"
+
+# This section tells Render to automatically run migrations after every deploy
+previews:
+  - name: backend
+    preDeploy:
+      - command: "python manage.py migrate"
