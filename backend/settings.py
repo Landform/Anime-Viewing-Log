@@ -15,21 +15,24 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-your-secret-ke
 DEBUG = os.environ.get('DEBUG', '1') == '1'
 
 
-# --- HOST, CORS, AND CSRF CONFIGURATION (CRITICAL FOR PRODUCTION) ---
+# --- HOST, CORS, CSRF, AND COOKIE CONFIGURATION (CRITICAL FOR PRODUCTION) ---
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-RENDER_INTERNAL_HOSTNAME = os.environ.get('RENDER_INTERNAL_HOSTNAME') # For health checks
-FRONTEND_HOSTNAME = os.environ.get('FRONTEND_HOSTNAME') # For CORS
+RENDER_INTERNAL_HOSTNAME = os.environ.get('RENDER_INTERNAL_HOSTNAME')
+FRONTEND_HOSTNAME = os.environ.get('FRONTEND_HOSTNAME')
 
 if RENDER_EXTERNAL_HOSTNAME:
     # Production settings for Render
     ALLOWED_HOSTS = [RENDER_EXTERNAL_HOSTNAME, RENDER_INTERNAL_HOSTNAME]
     CSRF_TRUSTED_ORIGINS = [f"https://{RENDER_EXTERNAL_HOSTNAME}"]
     
-    # This list allows the backend to accept requests from itself (for API browsing)
-    # and from the deployed frontend.
     CORS_ALLOWED_ORIGINS = [f"https://{RENDER_EXTERNAL_HOSTNAME}"]
     if FRONTEND_HOSTNAME:
         CORS_ALLOWED_ORIGINS.append(f"https://{FRONTEND_HOSTNAME}")
+        
+    # --- THIS IS THE CRITICAL FIX FOR 403 FORBIDDEN ERRORS ---
+    # Allow the session cookie to be sent from the frontend domain to the backend domain.
+    SESSION_COOKIE_SAMESITE = 'None'
+    SESSION_COOKIE_SECURE = True # This flag is required when SameSite is 'None'
         
 else:
     # Fallback settings for local development
@@ -126,5 +129,6 @@ REST_FRAMEWORK = {
     ],
 }
 
+# This setting is defined in the logic block at the top now
+# SESSION_COOKIE_SAMESITE = 'Lax'
 CORS_ALLOW_CREDENTIALS = True
-SESSION_COOKIE_SAMESITE = 'Lax'
