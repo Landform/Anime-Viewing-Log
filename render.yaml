@@ -1,34 +1,35 @@
-# The top-level key for managed databases
 databases:
   - name: anime-db
-    plan: free # Use the free database tier
-    postgresMajorVersion: 15 # Match your Docker image version
-    region: oregon # You can choose a different region, e.g., frankfurt
+    plan: free
+    postgresMajorVersion: 15
+    region: oregon
 
-# The top-level key for your web services, workers, etc.
 services:
   - type: web
     name: backend
-    plan: free # Use the free web service tier
-    region: oregon # Use the same region as your database
-    dockerfilePath: ./Dockerfile # Path to your backend Dockerfile
-    healthCheckPath: /health/
+    plan: free
+    region: oregon
     
-    # Render provides a $PORT variable that your app must listen on
+    # --- THIS IS THE CRITICAL FIX ---
+    runtime: docker # Explicitly tell Render to use Docker
+    dockerfilePath: ./Dockerfile # Now this will be correctly recognized
+    
+    # The health check and start command remain the same
+    healthCheckPath: /health/
     startCommand: "gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT"
 
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: anime-db # Correct way to reference the database
+          name: anime-db
           property: connectionString
       - key: DJANGO_SECRET_KEY
-        generateValue: true # Let Render create a secure secret key
+        generateValue: true
       - key: APP_HOSTNAME
         fromService:
           type: web
           name: backend
-          property: host # Automatically get the hostname
+          property: host
       - key: DEBUG
         value: 0
       - key: PYTHONUNBUFFERED
