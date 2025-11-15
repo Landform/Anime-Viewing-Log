@@ -1,30 +1,49 @@
-# Use official Python image
-FROM python:3.11-slim
+# --- Build Stage ---
+# This stage builds our Python dependencies
+FROM python:3.11-slim as builder
 
-# Set environment variables
+WORKDIR /usr/src/app
+
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Set working directory
-WORKDIR /app
-
-# Install dependencies
-COPY requirements.txt .
+# Install build dependencies
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
 
-# Copy project
+# Copy and install requirements
+COPY requirements.txt .
+RUN pip wheel --no-cache-dir --wheel-dir /usr/src/app/wheels -r requirements.txt
+
+
+# --- Final Stage ---
+# This stage builds the final, lightweight production image
+FROM python:3.11-slim
+
+WORKDIR /home/app
+
+# Copy the installed dependencies from the builder stage
+COPY --from=builder /usr/src/app/wheels /wheels
+COPY --from=builder /usr/src/app/requirements.txt .
+RUN pip install --no-cache /wheels/*
+
+# Copy the application code and the entrypoint script
 COPY . .
-
 COPY entrypoint.sh /home/app/entrypoint.sh
-# Make the script executable
 RUN chmod +x /home/app/entrypoint.sh
-# --- NEW LINES END HERE ---
 
+# --- CORRECTED SECTION START ---
+# Create a non-root user *after* all files are copied
+RUN addgroup --system app && adduser --system --group app
+
+# Change ownership of the files to the new user
 RUN chown -R app:app /home/app
+
+# Switch to the non-root user for security
 USER app
+# --- CORRECTED SECTION END ---
+
+# Expose the port
 EXPOSE 8000
 
-# --- CHANGE THIS LINE ---
-# Change the CMD to run our new entrypoint script
+# Run the entrypoint script as the startup command
 CMD ["/home/app/entrypoint.sh"]
