@@ -31,7 +31,6 @@ COPY . .
 COPY entrypoint.sh /home/app/entrypoint.sh
 RUN chmod +x /home/app/entrypoint.sh
 
-# --- CORRECTED SECTION START ---
 # Create a non-root user *after* all files are copied
 RUN addgroup --system app && adduser --system --group app
 
@@ -40,9 +39,8 @@ RUN chown -R app:app /home/app
 
 # Switch to the non-root user for security
 USER app
-# --- CORRECTED SECTION END ---
 
-# Expose the port
+# Expose the port Gunicorn will listen on inside the container
 EXPOSE 8000
 
 # Run the entrypoint script as the startup command
