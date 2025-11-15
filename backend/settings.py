@@ -1,10 +1,31 @@
+# settings.py
+
 from pathlib import Path
+import os
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-your-secret-key-here'
-DEBUG = True
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.214', 'backend',]
+# --- Production/Development Agnostic Settings ---
+
+# SECRET_KEY is loaded from an environment variable in production (Render will generate this)
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-your-secret-key-here')
+
+# DEBUG is False in production (value is '0'), True for local dev (value is '1' or not set)
+DEBUG = os.environ.get('DEBUG', '1') == '1'
+
+# --- CORRECTED ALLOWED_HOSTS LOGIC ---
+# Render provides RENDER_EXTERNAL_HOSTNAME automatically. We use it for production.
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS = [RENDER_EXTERNAL_HOSTNAME]
+    CSRF_TRUSTED_ORIGINS = [f"https://{RENDER_EXTERNAL_HOSTNAME}"]
+    CORS_ALLOWED_ORIGINS = [f"https://{RENDER_EXTERNAL_HOSTNAME}"] # Also update CORS for production
+else:
+    # Fallback for local development
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.214', 'backend']
+    CSRF_TRUSTED_ORIGINS = ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://192.168.1.214']
+    CORS_ALLOWED_ORIGINS = ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://192.168.1.214']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -50,12 +71,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
+# --- CORRECTED DATABASE LOGIC ---
+# Default to SQLite for local dev if DATABASE_URL is not set
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+# Use PostgreSQL in production (Render provides DATABASE_URL)
+DB_FROM_ENV = os.environ.get('DATABASE_URL')
+if DB_FROM_ENV:
+    DATABASES['default'] = dj_database_url.config(
+        default=DB_FROM_ENV,
+        conn_max_age=600,
+        engine='django.db.backends.postgresql'
+    )
 
 AUTH_PASSWORD_VALIDATORS = [
     { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
@@ -81,7 +112,5 @@ REST_FRAMEWORK = {
     ],
 }
 
-CORS_ALLOWED_ORIGINS = [ 'http://localhost:5173', 'http://127.0.0.1:5173','http://192.168.1.214',]
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = [ 'http://localhost:5173', 'http://127.0.0.1:5173','http://192.168.1.214',]
 SESSION_COOKIE_SAMESITE = 'Lax'

@@ -17,9 +17,8 @@ services:
     # Health check remains
     healthCheckPath: /health/
 
-    # NO startCommand HERE. Render will use the CMD from your Dockerfile:
-    # CMD ["gunicorn", "backend.wsgi:application", "--bind", "0.0.0.0:8000"]
-    # Render will automatically map its internal $PORT to the exposed 8000 port.
+    # Render will use the CMD from your Dockerfile.
+    # It automatically maps its internal port to the exposed 8000 port.
 
     envVars:
       - key: DATABASE_URL
@@ -27,12 +26,7 @@ services:
           name: anime-db
           property: connectionString
       - key: DJANGO_SECRET_KEY
-        generateValue: true
-      - key: APP_HOSTNAME
-        fromService:
-          type: web
-          name: backend
-          property: host
+        generateValue: true # Render will create a secure secret key for you
       - key: DEBUG
         value: 0
       - key: PYTHONUNBUFFERED
