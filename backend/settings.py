@@ -6,22 +6,33 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# --- Production/Development Agnostic Settings ---
+# --- Core Settings ---
 
+# SECRET_KEY is loaded from an environment variable in production (Render will generate this)
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-your-secret-key-here')
+
+# DEBUG is False in production (value is '0'), True for local dev (value is '1' or not set)
 DEBUG = os.environ.get('DEBUG', '1') == '1'
 
 
-# --- ALLOWED_HOSTS & CORS/CSRF FOR RENDER ---
+# --- HOST, CORS, AND CSRF CONFIGURATION (CRITICAL FOR PRODUCTION) ---
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 RENDER_INTERNAL_HOSTNAME = os.environ.get('RENDER_INTERNAL_HOSTNAME') # For health checks
+FRONTEND_HOSTNAME = os.environ.get('FRONTEND_HOSTNAME') # For CORS
 
 if RENDER_EXTERNAL_HOSTNAME:
+    # Production settings for Render
     ALLOWED_HOSTS = [RENDER_EXTERNAL_HOSTNAME, RENDER_INTERNAL_HOSTNAME]
     CSRF_TRUSTED_ORIGINS = [f"https://{RENDER_EXTERNAL_HOSTNAME}"]
+    
+    # This list allows the backend to accept requests from itself (for API browsing)
+    # and from the deployed frontend.
     CORS_ALLOWED_ORIGINS = [f"https://{RENDER_EXTERNAL_HOSTNAME}"]
+    if FRONTEND_HOSTNAME:
+        CORS_ALLOWED_ORIGINS.append(f"https://{FRONTEND_HOSTNAME}")
+        
 else:
-    # Fallback for local development
+    # Fallback settings for local development
     ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.214', 'backend']
     CSRF_TRUSTED_ORIGINS = ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://192.168.1.214']
     CORS_ALLOWED_ORIGINS = ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://192.168.1.214']
@@ -42,8 +53,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # For serving static files
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -81,8 +92,6 @@ DATABASES = {
 }
 DB_FROM_ENV = os.environ.get('DATABASE_URL')
 if DB_FROM_ENV:
-    # --- THIS IS THE CORRECTED LINE ---
-    # We wrap the result in dict() to convert it and make Pylance happy.
     DATABASES['default'] = dict(dj_database_url.config(
         default=DB_FROM_ENV,
         conn_max_age=600,
@@ -101,10 +110,12 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+# --- Static Files (with WhiteNoise) ---
 STATIC_URL = 'static/'
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
