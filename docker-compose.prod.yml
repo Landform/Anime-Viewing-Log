@@ -29,7 +29,7 @@ services:
   nginx:
     build: ./nginx
     volumes:
-      - ./frontend/vite-project/dist:/usr/share/nginx/html:ro
+      - ./frontend/dist:/usr/share/nginx/html:ro
       - static_volume:/home/app/staticfiles:ro
     ports:
       - "80:80"
